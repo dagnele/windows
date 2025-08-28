@@ -1,0 +1,33 @@
+command_timeout=600000
+
+format = """
+$time$dotnet$directory$git_branch$git_status
+$character"""
+
+[time]
+disabled = false
+format = '[\[$time\]]($style) '
+style = "bright-black"
+time_format = "%H:%M:%S"
+
+[character]
+success_symbol = "[❯](bold green)"
+error_symbol = "[❯](bold red)"
+
+[directory]
+style = "cyan"
+truncate_to_repo = true
+truncation_length = 3
+
+[git_branch]
+symbol = " "
+style = "purple"
+
+[git_status]
+style = "red"
+format = '([\[$all_status$ahead_behind\]]($style))'
+
+[dotnet]
+symbol = " " # Optional, looks like a lambda
+style = "blue"
+heuristic = true  # only show when you're in a .NET project
