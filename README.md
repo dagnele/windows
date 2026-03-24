@@ -7,7 +7,7 @@ Use this repo to rebuild the same Windows terminal and developer setup from scra
 - a consistent terminal experience across PowerShell and `cmd.exe` in Windows Terminal
 - Clink and Starship providing a shared prompt and better shell ergonomics
 - Zoxide, fzf, and ripgrep available as everyday navigation and search tools
-- Git, GitHub CLI, and OpenCode installed for the development workflow
+- Git and GitHub CLI installed for the development workflow
 
 Optional packages supported by the setup script:
 
@@ -17,6 +17,7 @@ Optional packages supported by the setup script:
 - Rustup
 - Doppler
 - Tailscale
+- OpenCode
 
 ## Prerequisites
 

@@ -10,7 +10,6 @@ $corePackages = @(
     @{ Name = 'PowerShell'; Id = 'Microsoft.PowerShell' },
     @{ Name = 'Git'; Id = 'Git.Git' },
     @{ Name = 'GitHub CLI'; Id = 'GitHub.cli' },
-    @{ Name = 'OpenCode'; Id = 'SST.OpenCodeDesktop' },
     @{ Name = 'Clink'; Id = 'chrisant996.Clink' },
     @{ Name = 'Starship'; Id = 'Starship.Starship' },
     @{ Name = 'Zoxide'; Id = 'ajeetdsouza.zoxide' },
@@ -25,6 +24,7 @@ $optionalPackageMap = @{
     Rustup    = @{ Name = 'Rustup'; Id = 'Rustlang.Rustup' }
     Doppler   = @{ Name = 'Doppler'; Id = 'Doppler.doppler' }
     Tailscale = @{ Name = 'Tailscale'; Id = 'Tailscale.Tailscale' }
+    OpenCode  = @{ Name = 'OpenCode'; Id = 'SST.OpenCodeDesktop' }
 }
 
 $clinkProfilePath = Join-Path $env:LOCALAPPDATA 'clink'

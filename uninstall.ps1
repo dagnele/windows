@@ -11,7 +11,6 @@ $corePackages = @(
     @{ Name = 'Zoxide'; Id = 'ajeetdsouza.zoxide' },
     @{ Name = 'Starship'; Id = 'Starship.Starship' },
     @{ Name = 'Clink'; Id = 'chrisant996.Clink' },
-    @{ Name = 'OpenCode'; Id = 'SST.OpenCodeDesktop' },
     @{ Name = 'GitHub CLI'; Id = 'GitHub.cli' },
     @{ Name = 'Git'; Id = 'Git.Git' },
     @{ Name = 'PowerShell'; Id = 'Microsoft.PowerShell' },
@@ -24,7 +23,8 @@ $optionalPackages = @(
     @{ Name = 'Bun'; Id = 'Oven-sh.Bun' },
     @{ Name = 'Rustup'; Id = 'Rustlang.Rustup' },
     @{ Name = 'Doppler'; Id = 'Doppler.doppler' },
-    @{ Name = 'Tailscale'; Id = 'Tailscale.Tailscale' }
+    @{ Name = 'Tailscale'; Id = 'Tailscale.Tailscale' },
+    @{ Name = 'OpenCode'; Id = 'SST.OpenCodeDesktop' }
 )
 
 $clinkProfilePath = Join-Path $env:LOCALAPPDATA 'clink'
