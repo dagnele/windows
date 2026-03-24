@@ -1,6 +1,6 @@
 # Windows Setup Guide
 
-Use this repo to rebuild the same Windows terminal and developer setup from scratch. The intended path is: clone the repo, run `./setup.ps1`, then start a new terminal. If you want to remove it later, use `./uninstall.ps1`.
+Use this repo to rebuild the same Windows terminal and developer setup from scratch. The intended path is: clone the repo, run `./install.ps1`, then start a new terminal. If you want to remove it later, use `./uninstall.ps1`.
 
 ## What You Will End Up With
 
@@ -37,22 +37,22 @@ cd C:\src\windows.git
 Install the default setup:
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File .\setup.ps1
+powershell -ExecutionPolicy Bypass -File .\install.ps1
 ```
 
 Install the default setup plus selected optional packages:
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File .\setup.ps1 -OptionalPackages CMake,LLVM,Bun
+powershell -ExecutionPolicy Bypass -File .\install.ps1 -OptionalPackages CMake,LLVM,Bun
 ```
 
 Dry run:
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File .\setup.ps1 -WhatIf
+powershell -ExecutionPolicy Bypass -File .\install.ps1 -WhatIf
 ```
 
-## What `setup.ps1` Does
+## What `install.ps1` Does
 
 - installs the core packages with `winget`
 - installs any selected optional packages
@@ -100,13 +100,13 @@ Pull the latest repo changes, then rerun the setup script:
 
 ```powershell
 git pull
-powershell -ExecutionPolicy Bypass -File .\setup.ps1
+powershell -ExecutionPolicy Bypass -File .\install.ps1
 ```
 
 To include optional packages again:
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File .\setup.ps1 -OptionalPackages CMake,LLVM,Bun
+powershell -ExecutionPolicy Bypass -File .\install.ps1 -OptionalPackages CMake,LLVM,Bun
 ```
 
 `winget install` will reuse existing packages and upgrade them when newer versions are available.
@@ -114,7 +114,7 @@ powershell -ExecutionPolicy Bypass -File .\setup.ps1 -OptionalPackages CMake,LLV
 ## Troubleshooting
 
 - Starship does not appear in `cmd.exe`: confirm `%LOCALAPPDATA%\clink\startship.lua` exists and `starship.exe` is on `PATH`
-- Starship does not appear in PowerShell: confirm your PowerShell profile includes the Starship init block added by `setup.ps1`
+- Starship does not appear in PowerShell: confirm your PowerShell profile includes the Starship init block added by `install.ps1`
 - `z` does not work: open a new shell after installing Zoxide so `PATH` is refreshed
 - `zi` does not work interactively: confirm `fzf` is installed and available on `PATH`
 - icons look wrong: install a Nerd Font and select it in Windows Terminal
