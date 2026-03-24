@@ -2,15 +2,12 @@
 
 Use this repo to rebuild the same Windows terminal and developer setup from scratch. The intended path is: clone the repo, run `./setup.ps1`, then start a new terminal. If you want to remove it later, use `./uninstall.ps1`.
 
-## What This Sets Up
+## What You Will End Up With
 
-- Windows Terminal and PowerShell for daily shell work
-- Clink for a better `cmd.exe` experience
-- Starship for the prompt
-- Zoxide for fast directory jumping
-- fzf for interactive fuzzy selection
-- ripgrep for fast recursive search
-- Git, GitHub CLI, and OpenCode for development workflow
+- a consistent terminal experience across PowerShell and `cmd.exe` in Windows Terminal
+- Clink and Starship providing a shared prompt and better shell ergonomics
+- Zoxide, fzf, and ripgrep available as everyday navigation and search tools
+- Git, GitHub CLI, and OpenCode installed for the development workflow
 
 Optional packages supported by the setup script:
 
