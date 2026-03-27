@@ -7,17 +7,18 @@ Use this repo to rebuild the same Windows terminal and developer setup from scra
 - a consistent terminal experience across PowerShell and `cmd.exe` in Windows Terminal
 - Clink and Starship providing a shared prompt and better shell ergonomics
 - Zoxide, fzf, and ripgrep available as everyday navigation and search tools
-- Git and GitHub CLI installed for the development workflow
+- Git installed for the development workflow
 
-Optional packages supported by the setup script:
+## Profiles
 
-- CMake
-- LLVM
-- Bun
-- Rustup
-- Doppler
-- Tailscale
-- OpenCode
+The setup script uses profiles to group packages. Base is always included. You can combine multiple profiles.
+
+| Profile | Packages |
+|---------|----------|
+| **Base** (default) | PowerShell, Git, Clink, Starship, Zoxide, fzf, ripgrep, Neovim, Obsidian |
+| **AI** | OpenCode |
+| **Rust** | Rustup, CMake, LLVM |
+| **Extra** | GitHub CLI, Bun, Doppler, Tailscale |
 
 ## Prerequisites
 
@@ -35,33 +36,49 @@ cd C:\src\windows.git
 
 ## 2. Run the Setup Script
 
-Install the default setup:
+Install with the Base profile (default):
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File .\install.ps1
+pwsh -ExecutionPolicy Bypass -File .\install.ps1
 ```
 
-Install the default setup plus selected optional packages:
+Install with additional profiles:
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File .\install.ps1 -OptionalPackages CMake,LLVM,Bun
+pwsh -ExecutionPolicy Bypass -File .\install.ps1 -InstallProfile AI,Rust
 ```
 
 Dry run:
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File .\install.ps1 -WhatIf
+pwsh -ExecutionPolicy Bypass -File .\install.ps1 -WhatIf
 ```
 
 ## What `install.ps1` Does
 
-- installs the core packages with `winget`
-- installs any selected optional packages
-- copies `.clink` into `%LOCALAPPDATA%\clink`
+- installs all packages for the selected profiles with `winget`
+- copies `.clink` into `%LOCALAPPDATA%\clink` (provides Starship prompt and Zoxide in `cmd.exe`)
 - copies `.starship\config.toml` into `$HOME\.config\starship.toml`
 - appends Starship and Zoxide initialization to your PowerShell profile if it is not already present
 
+Base is always included even when you only specify other profiles.
+
 After the script finishes, restart PowerShell, Windows Terminal, and any open `cmd.exe` sessions.
+
+## PowerShell Profile
+
+The script appends the following snippet to your PowerShell profile (`$PROFILE`). Clink is not needed here -- it only applies to `cmd.exe`.
+
+```powershell
+# Starship
+Invoke-Expression (&"starship.exe" init powershell)
+
+# Zoxide
+Invoke-Expression (& {
+    $hook = if ($PSVersionTable.PSVersion.Major -lt 6) { 'prompt' } else { 'pwd' }
+    (zoxide init --hook $hook powershell | Out-String)
+})
+```
 
 ## Verify the Setup
 
@@ -71,7 +88,6 @@ Run these checks:
 starship --version
 zoxide --version
 git --version
-gh --version
 fzf --version
 rg --version
 ```
@@ -101,13 +117,13 @@ Pull the latest repo changes, then rerun the setup script:
 
 ```powershell
 git pull
-powershell -ExecutionPolicy Bypass -File .\install.ps1
+pwsh -ExecutionPolicy Bypass -File .\install.ps1
 ```
 
-To include optional packages again:
+To include additional profiles:
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File .\install.ps1 -OptionalPackages CMake,LLVM,Bun
+pwsh -ExecutionPolicy Bypass -File .\install.ps1 -InstallProfile AI,Rust
 ```
 
 `winget install` will reuse existing packages and upgrade them when newer versions are available.
@@ -123,22 +139,28 @@ powershell -ExecutionPolicy Bypass -File .\install.ps1 -OptionalPackages CMake,L
 
 ## Uninstall
 
-Remove the deployed config, the PowerShell profile snippet, and the core packages:
+Remove Base profile packages and deployed config:
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File .\uninstall.ps1
+pwsh -ExecutionPolicy Bypass -File .\uninstall.ps1
 ```
 
-Also remove optional packages:
+Remove specific profiles:
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File .\uninstall.ps1 -RemoveOptionalPackages
+pwsh -ExecutionPolicy Bypass -File .\uninstall.ps1 -InstallProfile Extra
+```
+
+Remove everything:
+
+```powershell
+pwsh -ExecutionPolicy Bypass -File .\uninstall.ps1 -All
 ```
 
 Dry run:
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File .\uninstall.ps1 -WhatIf
+pwsh -ExecutionPolicy Bypass -File .\uninstall.ps1 -WhatIf
 ```
 
 ## License

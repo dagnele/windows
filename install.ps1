@@ -1,96 +1,48 @@
+#Requires -Version 7.0
 [CmdletBinding(SupportsShouldProcess = $true)]
 param(
-    [string[]]$OptionalPackages = @()
+    [string[]]$InstallProfile = @('Base')
 )
 
 $ErrorActionPreference = 'Stop'
 
-$corePackages = @(
-    @{ Name = 'Windows Terminal'; Id = 'Microsoft.WindowsTerminal' },
-    @{ Name = 'PowerShell'; Id = 'Microsoft.PowerShell' },
-    @{ Name = 'Git'; Id = 'Git.Git' },
-    @{ Name = 'GitHub CLI'; Id = 'GitHub.cli' },
-    @{ Name = 'Clink'; Id = 'chrisant996.Clink' },
-    @{ Name = 'Starship'; Id = 'Starship.Starship' },
-    @{ Name = 'Zoxide'; Id = 'ajeetdsouza.zoxide' },
-    @{ Name = 'fzf'; Id = 'junegunn.fzf' },
-    @{ Name = 'ripgrep'; Id = 'BurntSushi.ripgrep.MSVC' }
-)
+$validProfiles = @('Base', 'AI', 'Rust', 'Extra')
 
-$optionalPackageMap = @{
-    CMake     = @{ Name = 'CMake'; Id = 'Kitware.CMake' }
-    LLVM      = @{ Name = 'LLVM'; Id = 'LLVM.LLVM' }
-    Bun       = @{ Name = 'Bun'; Id = 'Oven-sh.Bun' }
-    Rustup    = @{ Name = 'Rustup'; Id = 'Rustlang.Rustup' }
-    Doppler   = @{ Name = 'Doppler'; Id = 'Doppler.doppler' }
-    Tailscale = @{ Name = 'Tailscale'; Id = 'Tailscale.Tailscale' }
-    OpenCode  = @{ Name = 'OpenCode'; Id = 'SST.OpenCodeDesktop' }
-}
-
-$clinkProfilePath = Join-Path $env:LOCALAPPDATA 'clink'
-$starshipConfigDirectory = Join-Path $HOME '.config'
-$starshipConfigPath = Join-Path $starshipConfigDirectory 'starship.toml'
-
-function Write-Step {
-    param([string]$Message)
-    Write-Host "`n==> $Message" -ForegroundColor Cyan
-}
-
-function Install-WingetPackage {
-    param(
-        [Parameter(Mandatory = $true)]
-        [hashtable]$Package
+$profilePackages = @{
+    Base  = @(
+        @{ Name = 'PowerShell'; Id = 'Microsoft.PowerShell' },
+        @{ Name = 'Git'; Id = 'Git.Git' },
+        @{ Name = 'Clink'; Id = 'chrisant996.Clink' },
+        @{ Name = 'Starship'; Id = 'Starship.Starship' },
+        @{ Name = 'Zoxide'; Id = 'ajeetdsouza.zoxide' },
+        @{ Name = 'fzf'; Id = 'junegunn.fzf' },
+        @{ Name = 'ripgrep'; Id = 'BurntSushi.ripgrep.MSVC' },
+        @{ Name = 'Obsidian'; Id = 'Obsidian.Obsidian' },
+        @{ Name = 'Neovim'; Id = 'Neovim.Neovim' }
     )
-
-    if ($PSCmdlet.ShouldProcess($Package.Id, 'Install package with winget')) {
-        Write-Host "Installing $($Package.Name) [$($Package.Id)]"
-        winget install --id $Package.Id -e --accept-package-agreements --accept-source-agreements
-    }
-}
-
-function Copy-RepoDirectory {
-    param(
-        [Parameter(Mandatory = $true)]
-        [string]$Source,
-
-        [Parameter(Mandatory = $true)]
-        [string]$Destination
+    AI    = @(
+        @{ Name = 'OpenCode'; Id = 'SST.OpenCodeDesktop' }
     )
-
-    if (!(Test-Path $Source)) {
-        throw "Missing source directory: $Source"
-    }
-
-    if ($PSCmdlet.ShouldProcess($Destination, "Copy files from $Source")) {
-        New-Item -ItemType Directory -Force -Path $Destination | Out-Null
-        Copy-Item -Path (Join-Path $Source '*') -Destination $Destination -Recurse -Force
-        Write-Host "Copied $Source -> $Destination"
-    }
-}
-
-function Copy-RepoFile {
-    param(
-        [Parameter(Mandatory = $true)]
-        [string]$Source,
-
-        [Parameter(Mandatory = $true)]
-        [string]$Destination
+    Rust  = @(
+        @{ Name = 'Rustup'; Id = 'Rustlang.Rustup' },
+        @{ Name = 'CMake'; Id = 'Kitware.CMake' },
+        @{ Name = 'LLVM'; Id = 'LLVM.LLVM' }
     )
-
-    if (!(Test-Path $Source)) {
-        throw "Missing source file: $Source"
-    }
-
-    $destinationDirectory = Split-Path -Parent $Destination
-    if ($PSCmdlet.ShouldProcess($Destination, "Copy file from $Source")) {
-        New-Item -ItemType Directory -Force -Path $destinationDirectory | Out-Null
-        Copy-Item -Path $Source -Destination $Destination -Force
-        Write-Host "Copied $Source -> $Destination"
-    }
+    Extra = @(
+        @{ Name = 'GitHub CLI'; Id = 'GitHub.cli' },
+        @{ Name = 'Bun'; Id = 'Oven-sh.Bun' },
+        @{ Name = 'Doppler'; Id = 'Doppler.doppler' },
+        @{ Name = 'Tailscale'; Id = 'Tailscale.Tailscale' }
+    )
 }
 
-function Ensure-PowerShellProfileSetup {
-    $profileSnippet = @'
+$profilePathEntries = @{
+    AI = @(
+        (Join-Path $env:LOCALAPPDATA 'OpenCode')
+    )
+}
+
+$profileSnippet = @'
 Invoke-Expression (&"starship.exe" init powershell)
 
 Invoke-Expression (& {
@@ -99,94 +51,111 @@ Invoke-Expression (& {
 })
 '@
 
-    $profileDirectory = Split-Path -Parent $PROFILE
-    if (!(Test-Path $profileDirectory)) {
-        if ($PSCmdlet.ShouldProcess($profileDirectory, 'Create PowerShell profile directory')) {
-            New-Item -ItemType Directory -Path $profileDirectory -Force | Out-Null
-        }
-    }
+$scriptRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
+$clinkProfilePath = Join-Path $env:LOCALAPPDATA 'clink'
+$starshipConfigPath = Join-Path $HOME '.config' 'starship.toml'
 
-    if (!(Test-Path $PROFILE)) {
-        if ($PSCmdlet.ShouldProcess($PROFILE, 'Create PowerShell profile file')) {
-            New-Item -ItemType File -Path $PROFILE -Force | Out-Null
-        }
-    }
-
-    $existingProfile = if (Test-Path $PROFILE) { Get-Content -Path $PROFILE -Raw } else { '' }
-
-    if ($existingProfile -match [regex]::Escape('starship.exe') -or $existingProfile -match [regex]::Escape('zoxide init --hook')) {
-        Write-Host "PowerShell profile already contains Starship or Zoxide setup: $PROFILE" -ForegroundColor Yellow
-        return
-    }
-
-    if ($PSCmdlet.ShouldProcess($PROFILE, 'Append Starship and Zoxide profile setup')) {
-        $prefix = if ([string]::IsNullOrWhiteSpace($existingProfile)) { '' } else { [Environment]::NewLine + [Environment]::NewLine }
-        Add-Content -Path $PROFILE -Value ($prefix + $profileSnippet)
-        Write-Host "Updated PowerShell profile: $PROFILE"
-    }
+function Write-Step {
+    param([string]$Message)
+    Write-Host "`n==> $Message" -ForegroundColor Cyan
 }
 
-function Resolve-OptionalPackages {
-    param(
-        [string[]]$PackageNames
-    )
+function Resolve-Profiles {
+    param([string[]]$ProfileNames)
 
-    $resolvedPackages = @()
+    $resolved = @()
+    foreach ($entry in $ProfileNames) {
+        foreach ($name in ($entry -split ',')) {
+            $name = $name.Trim()
+            if ([string]::IsNullOrWhiteSpace($name)) { continue }
 
-    if (-not $PackageNames -or $PackageNames.Count -eq 0) {
-        return $resolvedPackages
-    }
-
-    foreach ($entry in $PackageNames) {
-        foreach ($packageName in ($entry -split ',')) {
-            $trimmedName = $packageName.Trim()
-            if ([string]::IsNullOrWhiteSpace($trimmedName)) {
-                continue
-            }
-
-            $match = $optionalPackageMap.GetEnumerator() | Where-Object { $_.Key -ieq $trimmedName } | Select-Object -First 1
+            $match = $validProfiles | Where-Object { $_ -ieq $name } | Select-Object -First 1
             if (-not $match) {
-                $validNames = ($optionalPackageMap.Keys | Sort-Object) -join ', '
-                throw "Unknown optional package '$trimmedName'. Valid values: $validNames"
+                throw "Unknown profile '$name'. Valid profiles: $($validProfiles -join ', ')"
             }
-
-            if ($resolvedPackages.Id -contains $match.Value.Id) {
-                continue
-            }
-
-            $resolvedPackages += $match.Value
+            if ($resolved -inotcontains $match) { $resolved += $match }
         }
     }
 
-    return $resolvedPackages
+    if ($resolved -inotcontains 'Base') { $resolved = @('Base') + $resolved }
+    return $resolved
 }
+
+function Resolve-Packages {
+    param([string[]]$ProfileNames)
+
+    $packages = @()
+    foreach ($profileName in $ProfileNames) {
+        foreach ($package in $profilePackages[$profileName]) {
+            if ($packages.Id -notcontains $package.Id) { $packages += $package }
+        }
+    }
+    return $packages
+}
+
+# --- main ---
 
 if (!(Get-Command winget -ErrorAction SilentlyContinue)) {
     throw 'winget is required but was not found on PATH.'
 }
 
-$scriptRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
+$selectedProfiles = Resolve-Profiles -ProfileNames $InstallProfile
+$packages = Resolve-Packages -ProfileNames $selectedProfiles
 
-Write-Step 'Installing core packages'
-foreach ($package in $corePackages) {
-    Install-WingetPackage -Package $package
-}
-
-$selectedOptionalPackages = Resolve-OptionalPackages -PackageNames $OptionalPackages
-
-if ($selectedOptionalPackages.Count -gt 0) {
-    Write-Step 'Installing selected optional packages'
-    foreach ($package in $selectedOptionalPackages) {
-        Install-WingetPackage -Package $package
+Write-Step "Installing packages for profiles: $($selectedProfiles -join ', ')"
+foreach ($package in $packages) {
+    if ($PSCmdlet.ShouldProcess($package.Id, 'Install package with winget')) {
+        Write-Host "Installing $($package.Name) [$($package.Id)]"
+        winget install --id $package.Id -e --accept-package-agreements --accept-source-agreements
     }
 }
 
 Write-Step 'Copying Clink and Starship config'
-Copy-RepoDirectory -Source (Join-Path $scriptRoot '.clink') -Destination $clinkProfilePath
-Copy-RepoFile -Source (Join-Path $scriptRoot '.starship\config.toml') -Destination $starshipConfigPath
+if ($PSCmdlet.ShouldProcess($clinkProfilePath, 'Copy Clink config')) {
+    New-Item -ItemType Directory -Force -Path $clinkProfilePath | Out-Null
+    Copy-Item -Path (Join-Path $scriptRoot '.clink' '*') -Destination $clinkProfilePath -Recurse -Force
+    Write-Host "Copied .clink -> $clinkProfilePath"
+}
+if ($PSCmdlet.ShouldProcess($starshipConfigPath, 'Copy Starship config')) {
+    New-Item -ItemType Directory -Force -Path (Split-Path -Parent $starshipConfigPath) | Out-Null
+    Copy-Item -Path (Join-Path $scriptRoot '.starship' 'config.toml') -Destination $starshipConfigPath -Force
+    Write-Host "Copied .starship/config.toml -> $starshipConfigPath"
+}
+
+$pathEntries = @()
+foreach ($name in $selectedProfiles) {
+    if ($profilePathEntries.ContainsKey($name)) { $pathEntries += $profilePathEntries[$name] }
+}
+if ($pathEntries.Count -gt 0) {
+    Write-Step 'Configuring PATH'
+    $currentPath = [Environment]::GetEnvironmentVariable('Path', 'User')
+    $entries = $currentPath -split ';' | Where-Object { $_ -ne '' }
+    foreach ($dir in $pathEntries) {
+        if ($entries -icontains $dir) {
+            Write-Host "PATH already contains $dir" -ForegroundColor Yellow
+        } elseif ($PSCmdlet.ShouldProcess($dir, 'Add to user PATH')) {
+            $entries += $dir
+            Write-Host "Added $dir to user PATH"
+        }
+    }
+    $newPath = $entries -join ';'
+    if ($newPath -ne $currentPath -and $PSCmdlet.ShouldProcess('User PATH', 'Save updated PATH')) {
+        [Environment]::SetEnvironmentVariable('Path', $newPath, 'User')
+        $env:Path = ($env:Path -split ';' | Where-Object { $_ -ne '' }) + $pathEntries -join ';'
+    }
+}
 
 Write-Step 'Configuring PowerShell profile'
-Ensure-PowerShellProfileSetup
+$profileContent = if (Test-Path $PROFILE) { Get-Content -Path $PROFILE -Raw } else { '' }
+if ($profileContent -match [regex]::Escape('starship.exe') -or $profileContent -match [regex]::Escape('zoxide init --hook')) {
+    Write-Host "PowerShell profile already contains Starship or Zoxide setup: $PROFILE" -ForegroundColor Yellow
+} elseif ($PSCmdlet.ShouldProcess($PROFILE, 'Append Starship and Zoxide init')) {
+    $profileDir = Split-Path -Parent $PROFILE
+    if (!(Test-Path $profileDir)) { New-Item -ItemType Directory -Path $profileDir -Force | Out-Null }
+    $prefix = if ([string]::IsNullOrWhiteSpace($profileContent)) { '' } else { "`n`n" }
+    Add-Content -Path $PROFILE -Value ($prefix + $profileSnippet)
+    Write-Host "Updated PowerShell profile: $PROFILE"
+}
 
 Write-Step 'Done'
 Write-Host 'Restart PowerShell, Windows Terminal, and any open cmd.exe sessions.' -ForegroundColor Green
