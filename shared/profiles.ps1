@@ -5,6 +5,8 @@ $validProfiles = @('Base', 'AI', 'Rust', 'Extra')
 
 $profilePackages = @{
     Base  = @(
+        @{ Name = 'Windows Terminal'; Id = 'Microsoft.WindowsTerminal' },
+        @{ Name = 'PowerToys'; Id = 'Microsoft.PowerToys' },
         @{ Name = 'PowerShell'; Id = 'Microsoft.PowerShell' },
         @{ Name = 'Git'; Id = 'Git.Git' },
         @{ Name = 'Clink'; Id = 'chrisant996.Clink' },
