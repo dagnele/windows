@@ -14,8 +14,6 @@ $profilePackages = @{
         @{ Name = 'Zoxide'; Id = 'ajeetdsouza.zoxide' },
         @{ Name = 'fzf'; Id = 'junegunn.fzf' },
         @{ Name = 'ripgrep'; Id = 'BurntSushi.ripgrep.MSVC' },
-        @{ Name = 'Obsidian'; Id = 'Obsidian.Obsidian' },
-        @{ Name = 'Neovim'; Id = 'Neovim.Neovim' },
         @{ Name = 'Zen Browser'; Id = 'Zen-Team.Zen-Browser' }
     )
     AI    = @(
@@ -33,6 +31,8 @@ $profilePackages = @{
         @{ Name = 'Tailscale'; Id = 'Tailscale.Tailscale' }
     )
     Editor = @(
+        @{ Name = 'Neovim'; Id = 'Neovim.Neovim' },
+        @{ Name = 'Obsidian'; Id = 'Obsidian.Obsidian' },
         @{ Name = 'Oh My Posh'; Id = 'JanDeDobbeleer.OhMyPosh' },
         @{ Name = 'Zig'; Id = 'zig.zig' },
         @{ Name = 'WinLibs'; Id = 'BrechtSanders.WinLibs.POSIX.UCRT' }

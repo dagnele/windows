@@ -15,8 +15,8 @@ The setup script uses profiles to group packages. Base is always included. You c
 
 | Profile | Packages |
 |---------|----------|
-| **Base** (default) | PowerShell, Git, Clink, Starship, Zoxide, fzf, ripgrep, Neovim, Obsidian, Zen Browser |
-| **Editor** | Oh My Posh, Zig, WinLibs, tree-sitter-cli |
+| **Base** (default) | PowerShell, Git, Clink, Starship, Zoxide, fzf, ripgrep, Zen Browser |
+| **Editor** | Neovim, Obsidian, Oh My Posh, Zig, WinLibs, tree-sitter-cli |
 | **AI** | OpenCode |
 | **Rust** | Rustup, CMake, LLVM |
 | **Extra** | GitHub CLI, Bun, Doppler, Tailscale |
