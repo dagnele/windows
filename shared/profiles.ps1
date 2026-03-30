@@ -1,7 +1,7 @@
 # Shared profile definitions, helpers, and config paths.
 # Dot-source this file from install.ps1 and uninstall.ps1.
 
-$validProfiles = @('Base', 'AI', 'Rust', 'Extra')
+$validProfiles = @('Base', 'Editor', 'AI', 'Rust', 'Extra')
 
 $profilePackages = @{
     Base  = @(
@@ -32,11 +32,19 @@ $profilePackages = @{
         @{ Name = 'Doppler'; Id = 'Doppler.doppler' },
         @{ Name = 'Tailscale'; Id = 'Tailscale.Tailscale' }
     )
+    Editor = @(
+        @{ Name = 'Oh My Posh'; Id = 'JanDeDobbeleer.OhMyPosh' },
+        @{ Name = 'Zig'; Id = 'zig.zig' },
+        @{ Name = 'WinLibs'; Id = 'BrechtSanders.WinLibs.POSIX.UCRT' }
+    )
 }
 
 $profilePathEntries = @{
     AI = @(
         (Join-Path $env:LOCALAPPDATA 'OpenCode')
+    )
+    Editor = @(
+        (Join-Path $env:USERPROFILE '.cargo' 'bin')
     )
 }
 
@@ -47,6 +55,10 @@ Invoke-Expression (& {
     $hook = if ($PSVersionTable.PSVersion.Major -lt 6) { 'prompt' } else { 'pwd' }
     (zoxide init --hook $hook powershell | Out-String)
 })
+
+if (Get-Command oh-my-posh -ErrorAction SilentlyContinue) {
+    oh-my-posh init pwsh --config "$env:POSH_THEMES_PATH\zash.omp.json" | Invoke-Expression
+}
 '@
 
 $clinkProfilePath = Join-Path $env:LOCALAPPDATA 'clink'

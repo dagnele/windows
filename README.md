@@ -16,6 +16,7 @@ The setup script uses profiles to group packages. Base is always included. You c
 | Profile | Packages |
 |---------|----------|
 | **Base** (default) | PowerShell, Git, Clink, Starship, Zoxide, fzf, ripgrep, Neovim, Obsidian, Zen Browser |
+| **Editor** | Oh My Posh, Zig, WinLibs, tree-sitter-cli |
 | **AI** | OpenCode |
 | **Rust** | Rustup, CMake, LLVM |
 | **Extra** | GitHub CLI, Bun, Doppler, Tailscale |
@@ -25,6 +26,39 @@ The setup script uses profiles to group packages. Base is always included. You c
 - Windows 10 or Windows 11
 - [WinGet](https://learn.microsoft.com/windows/package-manager/winget/) available in PowerShell
 - A checkout location such as `C:\src`
+
+## Editor Profile (NeoVim Development)
+
+If you plan to develop with NeoVim (building from source, tree-sitter parsers, etc.), include the Editor profile:
+
+```powershell
+pwsh -ExecutionPolicy Bypass -File .\install.ps1 -InstallProfile Editor
+```
+
+This installs:
+- **Oh My Posh** - Terminal theme engine with prompt customization
+- **Zig** - Build dependency for compiling NeoVim
+- **WinLibs** - GCC toolchain for native builds
+
+Note: **tree-sitter-cli** requires Rust. Install with:
+```powershell
+cargo install tree-sitter-cli
+```
+Or use the Rust profile: `-InstallProfile Editor,Rust`
+
+### NeoVim Setup Notes
+
+1. **Font Configuration**: Install a Nerd Font (e.g., FiraCode Nerd Font) and set it in Windows Terminal:
+   - Open Windows Terminal Settings → Appearance → Font face → Select "FiraCode Nerd Font"
+
+2. **Tree-sitter Parsers**: Compile tree-sitter parsers for your languages:
+   ```powershell
+   :TSInstallSync python
+   :TSInstallSync javascript
+   :TSInstallSync typescript
+   ```
+
+3. **Oh My Posh**: The Editor profile configures Oh My Posh themes. Customize in `%USERPROFILE%\.oh-my-posh.omp.json` or via `oh-my-posh theme`.
 
 ## 1. Clone This Repo
 
