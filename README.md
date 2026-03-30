@@ -48,10 +48,9 @@ Or use the Rust profile: `-InstallProfile Editor,Rust`
 
 ### NeoVim Setup Notes
 
-1. **Font Configuration**: Install a Nerd Font (e.g., FiraCode Nerd Font) and set it in Windows Terminal:
-   - Open Windows Terminal Settings → Appearance → Font face → Select "FiraCode Nerd Font"
+1. **Oh My Posh**: Run `oh-my-posh font install` in PowerShell to install Nerd Fonts.
 
-2. **Oh My Posh**: Run `oh-my-posh font install` in PowerShell to install Nerd Fonts, then configure Windows Terminal to use the new font in Settings → Appearance.
+2. **Font Configuration**: Configure Windows Terminal to use the new font in Settings → Appearance → Font face (e.g., FiraCode Nerd Font).
 
 3. **LazyVim**: A pre-configured NeoVim distribution. Install by backing up your config and cloning the starter:
    ```powershell
