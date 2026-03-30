@@ -1,7 +1,7 @@
 # Shared profile definitions, helpers, and config paths.
 # Dot-source this file from install.ps1 and uninstall.ps1.
 
-$validProfiles = @('Base', 'Editor', 'AI', 'Rust', 'Extra')
+$validProfiles = @('Base', 'Editor', 'Browser', 'AI', 'Rust', 'Extra')
 
 $profilePackages = @{
     Base  = @(
@@ -13,8 +13,7 @@ $profilePackages = @{
         @{ Name = 'Starship'; Id = 'Starship.Starship' },
         @{ Name = 'Zoxide'; Id = 'ajeetdsouza.zoxide' },
         @{ Name = 'fzf'; Id = 'junegunn.fzf' },
-        @{ Name = 'ripgrep'; Id = 'BurntSushi.ripgrep.MSVC' },
-        @{ Name = 'Zen Browser'; Id = 'Zen-Team.Zen-Browser' }
+        @{ Name = 'ripgrep'; Id = 'BurntSushi.ripgrep.MSVC' }
     )
     AI    = @(
         @{ Name = 'OpenCode'; Id = 'SST.OpenCodeDesktop' }
@@ -36,6 +35,9 @@ $profilePackages = @{
         @{ Name = 'Oh My Posh'; Id = 'JanDeDobbeleer.OhMyPosh' },
         @{ Name = 'Zig'; Id = 'zig.zig' },
         @{ Name = 'WinLibs'; Id = 'BrechtSanders.WinLibs.POSIX.UCRT' }
+    )
+    Browser = @(
+        @{ Name = 'Zen Browser'; Id = 'Zen-Team.Zen-Browser' }
     )
 }
 

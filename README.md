@@ -15,8 +15,9 @@ The setup script uses profiles to group packages. Base is always included. You c
 
 | Profile | Packages |
 |---------|----------|
-| **Base** (default) | PowerShell, Git, Clink, Starship, Zoxide, fzf, ripgrep, Zen Browser |
+| **Base** (default) | PowerShell, Git, Clink, Starship, Zoxide, fzf, ripgrep |
 | **Editor** | Neovim, Obsidian, Oh My Posh, Zig, WinLibs, tree-sitter-cli |
+| **Browser** | Zen Browser |
 | **AI** | OpenCode |
 | **Rust** | Rustup, CMake, LLVM |
 | **Extra** | GitHub CLI, Bun, Doppler, Tailscale |
@@ -58,6 +59,23 @@ Or use the Rust profile: `-InstallProfile Editor,Rust`
    git clone https://github.com/LazyVim/starter $env:LOCALAPPDATA\nvim
    ```
    Restart NeoVim and run `:LazySync` to install plugins.
+
+## Browser Profile
+
+If you want Zen Browser with recommended extensions, include the Browser profile:
+
+```powershell
+pwsh -ExecutionPolicy Bypass -File .\install.ps1 -InstallProfile Browser
+```
+
+### Recommended Extensions
+
+Install these extensions from Firefox Add-ons:
+
+- [uBlock Origin](https://addons.mozilla.org/en-us/firefox/addon/ublock-origin/) - Ad blocker
+- [Tampermonkey](https://addons.mozilla.org/en-US/firefox/addon/tampermonkey/) - Userscript manager
+- [Bitwarden](https://addons.mozilla.org/firefox/addon/bitwarden-password-manager) - Password manager
+- [Unhook](https://addons.mozilla.org/en-US/firefox/addon/youtube-recommended-videos/) - Remove YouTube recommendations and shorts
 
 ## 1. Clone This Repo
 
