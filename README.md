@@ -51,14 +51,14 @@ Or use the Rust profile: `-InstallProfile Editor,Rust`
 1. **Font Configuration**: Install a Nerd Font (e.g., FiraCode Nerd Font) and set it in Windows Terminal:
    - Open Windows Terminal Settings → Appearance → Font face → Select "FiraCode Nerd Font"
 
-2. **LazyVim**: A pre-configured NeoVim distribution. Install by backing up your config and cloning the starter:
+2. **Oh My Posh**: Fonts are installed automatically. To configure, run `oh-my-posh font install` in PowerShell.
+
+3. **LazyVim**: A pre-configured NeoVim distribution. Install by backing up your config and cloning the starter:
    ```powershell
    mv $env:LOCALAPPDATA\nvim $env:LOCALAPPDATA\nvim.bak
    git clone https://github.com/LazyVim/starter $env:LOCALAPPDATA\nvim
    ```
    Restart NeoVim and run `:LazySync` to install plugins.
-
-3. **Oh My Posh**: Fonts are installed automatically. To configure, run `oh-my-posh font install` in PowerShell.
 
 ## 1. Clone This Repo
 
