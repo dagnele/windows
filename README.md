@@ -23,8 +23,9 @@ Packages have a `Type` of either `winget` (installed via `winget install`) or `c
 | **AI** | OpenCode, OpenCodeConfig*, Memento* |
 | **Rust** | Rustup |
 | **BuildExtras** | CMake, LLVM |
+| **Bun** | Bun |
 | **Python** | Python 3.12 |
-| **Extra** | GitHub CLI, Bun, Doppler, Tailscale |
+| **Extra** | GitHub CLI, Doppler, Tailscale |
 
 \* = custom package (see `shared/packages/`)
 

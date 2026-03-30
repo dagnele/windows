@@ -5,7 +5,7 @@
 #   winget  - installed via winget install --id <Id>
 #   custom  - installed via shared/packages/<Name>.ps1 (Install-Package / Uninstall-Package)
 
-$validProfiles = @('Base', 'Editor', 'Browser', 'AI', 'Rust', 'BuildExtras', 'Python', 'Extra')
+$validProfiles = @('Base', 'Editor', 'Browser', 'AI', 'Rust', 'BuildExtras', 'Bun', 'Python', 'Extra')
 
 $profilePackages = @{
     Base  = @(
@@ -36,9 +36,11 @@ $profilePackages = @{
     )
     Extra = @(
         @{ Name = 'GitHub CLI'; Id = 'GitHub.cli'; Type = 'winget' },
-        @{ Name = 'Bun'; Id = 'Oven-sh.Bun'; Type = 'winget' },
         @{ Name = 'Doppler'; Id = 'Doppler.doppler'; Type = 'winget' },
         @{ Name = 'Tailscale'; Id = 'Tailscale.Tailscale'; Type = 'winget' }
+    )
+    Bun   = @(
+        @{ Name = 'Bun'; Id = 'Oven-sh.Bun'; Type = 'winget' }
     )
     Editor = @(
         @{ Name = 'Neovim'; Id = 'Neovim.Neovim'; Type = 'winget' },
