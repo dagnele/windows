@@ -1,0 +1,15 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "chrome-devtools": {
+      "type": "local",
+      "enabled": true,
+      "command": [
+        "bunx",
+        "-y",
+        "chrome-devtools-mcp@latest",
+        "--chromeArg=--disable-blink-features=AutomationControlled"
+      ]
+    }
+  }
+}

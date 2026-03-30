@@ -37,6 +37,14 @@ if ($PSCmdlet.ShouldProcess($starshipConfigPath, 'Copy Starship config')) {
     Copy-Item -Path (Join-Path $scriptRoot '.starship' 'config.toml') -Destination $starshipConfigPath -Force
     Write-Host "Copied .starship/config.toml -> $starshipConfigPath"
 }
+if ($selectedProfiles -icontains 'AI') {
+    Write-Step 'Copying OpenCode config'
+    if ($PSCmdlet.ShouldProcess($opencodeConfigPath, 'Copy OpenCode config')) {
+        New-Item -ItemType Directory -Force -Path $opencodeConfigPath | Out-Null
+        Copy-Item -Path (Join-Path $scriptRoot '.opencode' '*') -Destination $opencodeConfigPath -Recurse -Force
+        Write-Host "Copied .opencode -> $opencodeConfigPath"
+    }
+}
 
 $pathEntries = @()
 foreach ($name in $selectedProfiles) {

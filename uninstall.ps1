@@ -33,6 +33,15 @@ if ($removingBase) {
             Write-Host "Removed $path"
         }
     }
+}
+
+if ($selectedProfiles -icontains 'AI') {
+    Write-Step 'Removing OpenCode config'
+    if ((Test-Path $opencodeConfigPath) -and $PSCmdlet.ShouldProcess($opencodeConfigPath, 'Remove')) {
+        Remove-Item -Recurse -Force $opencodeConfigPath
+        Write-Host "Removed $opencodeConfigPath"
+    }
+}
 
     $profileContent = if (Test-Path $PROFILE) { Get-Content -Path $PROFILE -Raw } else { '' }
     if ($profileContent.IndexOf($profileSnippet, [System.StringComparison]::Ordinal) -ge 0) {

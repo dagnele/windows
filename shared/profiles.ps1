@@ -1,7 +1,7 @@
 # Shared profile definitions, helpers, and config paths.
 # Dot-source this file from install.ps1 and uninstall.ps1.
 
-$validProfiles = @('Base', 'Editor', 'Browser', 'AI', 'Rust', 'Extra')
+$validProfiles = @('Base', 'Editor', 'Browser', 'AI', 'Rust', 'Python', 'Extra')
 
 $profilePackages = @{
     Base  = @(
@@ -39,6 +39,9 @@ $profilePackages = @{
     Browser = @(
         @{ Name = 'Zen Browser'; Id = 'Zen-Team.Zen-Browser' }
     )
+    Python = @(
+        @{ Name = 'Python 3.12'; Id = 'Python.Python.3.12' }
+    )
 }
 
 $profilePathEntries = @{
@@ -65,6 +68,7 @@ if (Get-Command oh-my-posh -ErrorAction SilentlyContinue) {
 
 $clinkProfilePath = Join-Path $env:LOCALAPPDATA 'clink'
 $starshipConfigPath = Join-Path $HOME '.config' 'starship.toml'
+$opencodeConfigPath = Join-Path $HOME '.config' 'opencode'
 
 function Write-Step {
     param([string]$Message)
