@@ -58,7 +58,7 @@ Or use the Rust profile: `-InstallProfile Editor,Rust`
    ```
    Restart NeoVim and run `:LazySync` to install plugins.
 
-3. **Oh My Posh**: The Editor profile configures Oh My Posh themes. Customize in `%USERPROFILE%\.oh-my-posh.omp.json` or via `oh-my-posh theme`.
+3. **Oh My Posh**: Fonts are installed automatically. To configure, run `oh-my-posh font install` in PowerShell.
 
 ## 1. Clone This Repo
 
