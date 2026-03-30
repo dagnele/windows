@@ -6,8 +6,8 @@ param(
 
 $ErrorActionPreference = 'Stop'
 
-$scriptRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
-. (Join-Path $scriptRoot 'shared' 'profiles.ps1')
+$global:scriptRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
+. (Join-Path $global:scriptRoot 'shared' 'profiles.ps1')
 
 # --- main ---
 
@@ -20,29 +20,15 @@ $packages = Resolve-Packages -ProfileNames $selectedProfiles
 
 Write-Step "Installing packages for profiles: $($selectedProfiles -join ', ')"
 foreach ($package in $packages) {
-    if ($PSCmdlet.ShouldProcess($package.Id, 'Install package with winget')) {
-        Write-Host "Installing $($package.Name) [$($package.Id)]"
-        winget install --id $package.Id -e --accept-package-agreements --accept-source-agreements
-    }
-}
-
-Write-Step 'Copying Clink and Starship config'
-if ($PSCmdlet.ShouldProcess($clinkProfilePath, 'Copy Clink config')) {
-    New-Item -ItemType Directory -Force -Path $clinkProfilePath | Out-Null
-    Copy-Item -Path (Join-Path $scriptRoot '.clink' '*') -Destination $clinkProfilePath -Recurse -Force
-    Write-Host "Copied .clink -> $clinkProfilePath"
-}
-if ($PSCmdlet.ShouldProcess($starshipConfigPath, 'Copy Starship config')) {
-    New-Item -ItemType Directory -Force -Path (Split-Path -Parent $starshipConfigPath) | Out-Null
-    Copy-Item -Path (Join-Path $scriptRoot '.starship' 'config.toml') -Destination $starshipConfigPath -Force
-    Write-Host "Copied .starship/config.toml -> $starshipConfigPath"
-}
-if ($selectedProfiles -icontains 'AI') {
-    Write-Step 'Copying OpenCode config'
-    if ($PSCmdlet.ShouldProcess($opencodeConfigPath, 'Copy OpenCode config')) {
-        New-Item -ItemType Directory -Force -Path $opencodeConfigPath | Out-Null
-        Copy-Item -Path (Join-Path $scriptRoot '.opencode' '*') -Destination $opencodeConfigPath -Recurse -Force
-        Write-Host "Copied .opencode -> $opencodeConfigPath"
+    if ($package.Type -eq 'custom') {
+        $scriptPath = Join-Path $packagesDir "$($package.Name).ps1"
+        . $scriptPath
+        Install-Package -WhatIf:$WhatIfPreference
+    } else {
+        if ($PSCmdlet.ShouldProcess($package.Id, 'Install package with winget')) {
+            Write-Host "Installing $($package.Name) [$($package.Id)]"
+            winget install --id $package.Id -e --accept-package-agreements --accept-source-agreements
+        }
     }
 }
 
@@ -67,18 +53,6 @@ if ($pathEntries.Count -gt 0) {
         [Environment]::SetEnvironmentVariable('Path', $newPath, 'User')
         $env:Path = ($env:Path -split ';' | Where-Object { $_ -ne '' }) + $pathEntries -join ';'
     }
-}
-
-Write-Step 'Configuring PowerShell profile'
-$profileContent = if (Test-Path $PROFILE) { Get-Content -Path $PROFILE -Raw } else { '' }
-if ($profileContent -match [regex]::Escape('starship.exe') -or $profileContent -match [regex]::Escape('zoxide init --hook')) {
-    Write-Host "PowerShell profile already contains Starship or Zoxide setup: $PROFILE" -ForegroundColor Yellow
-} elseif ($PSCmdlet.ShouldProcess($PROFILE, 'Append Starship and Zoxide init')) {
-    $profileDir = Split-Path -Parent $PROFILE
-    if (!(Test-Path $profileDir)) { New-Item -ItemType Directory -Path $profileDir -Force | Out-Null }
-    $prefix = if ([string]::IsNullOrWhiteSpace($profileContent)) { '' } else { "`n`n" }
-    Add-Content -Path $PROFILE -Value ($prefix + $profileSnippet)
-    Write-Host "Updated PowerShell profile: $PROFILE"
 }
 
 Write-Step 'Done'

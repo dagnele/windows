@@ -1,74 +1,71 @@
 # Shared profile definitions, helpers, and config paths.
 # Dot-source this file from install.ps1 and uninstall.ps1.
+#
+# Package types:
+#   winget  - installed via winget install --id <Id>
+#   custom  - installed via shared/packages/<Name>.ps1 (Install-Package / Uninstall-Package)
 
-$validProfiles = @('Base', 'Editor', 'Browser', 'AI', 'Rust', 'Python', 'Extra')
+$validProfiles = @('Base', 'Editor', 'Browser', 'AI', 'Rust', 'BuildExtras', 'Python', 'Extra')
 
 $profilePackages = @{
     Base  = @(
-        @{ Name = 'Windows Terminal'; Id = 'Microsoft.WindowsTerminal' },
-        @{ Name = 'PowerToys'; Id = 'Microsoft.PowerToys' },
-        @{ Name = 'PowerShell'; Id = 'Microsoft.PowerShell' },
-        @{ Name = 'Git'; Id = 'Git.Git' },
-        @{ Name = 'Clink'; Id = 'chrisant996.Clink' },
-        @{ Name = 'Starship'; Id = 'Starship.Starship' },
-        @{ Name = 'Zoxide'; Id = 'ajeetdsouza.zoxide' },
-        @{ Name = 'fzf'; Id = 'junegunn.fzf' },
-        @{ Name = 'ripgrep'; Id = 'BurntSushi.ripgrep.MSVC' }
+        @{ Name = 'Windows Terminal'; Id = 'Microsoft.WindowsTerminal'; Type = 'winget' },
+        @{ Name = 'PowerToys'; Id = 'Microsoft.PowerToys'; Type = 'winget' },
+        @{ Name = 'PowerShell'; Id = 'Microsoft.PowerShell'; Type = 'winget' },
+        @{ Name = 'Git'; Id = 'Git.Git'; Type = 'winget' },
+        @{ Name = 'Clink'; Id = 'chrisant996.Clink'; Type = 'winget' },
+        @{ Name = 'Starship'; Id = 'Starship.Starship'; Type = 'winget' },
+        @{ Name = 'Zoxide'; Id = 'ajeetdsouza.zoxide'; Type = 'winget' },
+        @{ Name = 'fzf'; Id = 'junegunn.fzf'; Type = 'winget' },
+        @{ Name = 'ripgrep'; Id = 'BurntSushi.ripgrep.MSVC'; Type = 'winget' },
+        @{ Name = 'ClinkConfig'; Type = 'custom' },
+        @{ Name = 'StarshipConfig'; Type = 'custom' },
+        @{ Name = 'ShellProfile'; Type = 'custom' }
     )
     AI    = @(
-        @{ Name = 'OpenCode'; Id = 'SST.OpenCodeDesktop' }
+        @{ Name = 'OpenCode'; Id = 'SST.OpenCodeDesktop'; Type = 'winget' },
+        @{ Name = 'OpenCodeConfig'; Type = 'custom' },
+        @{ Name = 'Memento'; Type = 'custom' }
     )
     Rust  = @(
-        @{ Name = 'Rustup'; Id = 'Rustlang.Rustup' },
-        @{ Name = 'CMake'; Id = 'Kitware.CMake' },
-        @{ Name = 'LLVM'; Id = 'LLVM.LLVM' }
+        @{ Name = 'Rustup'; Id = 'Rustlang.Rustup'; Type = 'winget' }
+    )
+    BuildExtras = @(
+        @{ Name = 'CMake'; Id = 'Kitware.CMake'; Type = 'winget' },
+        @{ Name = 'LLVM'; Id = 'LLVM.LLVM'; Type = 'winget' }
     )
     Extra = @(
-        @{ Name = 'GitHub CLI'; Id = 'GitHub.cli' },
-        @{ Name = 'Bun'; Id = 'Oven-sh.Bun' },
-        @{ Name = 'Doppler'; Id = 'Doppler.doppler' },
-        @{ Name = 'Tailscale'; Id = 'Tailscale.Tailscale' }
+        @{ Name = 'GitHub CLI'; Id = 'GitHub.cli'; Type = 'winget' },
+        @{ Name = 'Bun'; Id = 'Oven-sh.Bun'; Type = 'winget' },
+        @{ Name = 'Doppler'; Id = 'Doppler.doppler'; Type = 'winget' },
+        @{ Name = 'Tailscale'; Id = 'Tailscale.Tailscale'; Type = 'winget' }
     )
     Editor = @(
-        @{ Name = 'Neovim'; Id = 'Neovim.Neovim' },
-        @{ Name = 'Obsidian'; Id = 'Obsidian.Obsidian' },
-        @{ Name = 'Oh My Posh'; Id = 'JanDeDobbeleer.OhMyPosh' },
-        @{ Name = 'Zig'; Id = 'zig.zig' },
-        @{ Name = 'WinLibs'; Id = 'BrechtSanders.WinLibs.POSIX.UCRT' }
+        @{ Name = 'Neovim'; Id = 'Neovim.Neovim'; Type = 'winget' },
+        @{ Name = 'Obsidian'; Id = 'Obsidian.Obsidian'; Type = 'winget' },
+        @{ Name = 'Oh My Posh'; Id = 'JanDeDobbeleer.OhMyPosh'; Type = 'winget' },
+        @{ Name = 'Zig'; Id = 'zig.zig'; Type = 'winget' },
+        @{ Name = 'WinLibs'; Id = 'BrechtSanders.WinLibs.POSIX.UCRT'; Type = 'winget' }
     )
     Browser = @(
-        @{ Name = 'Zen Browser'; Id = 'Zen-Team.Zen-Browser' }
+        @{ Name = 'Zen Browser'; Id = 'Zen-Team.Zen-Browser'; Type = 'winget' }
     )
     Python = @(
-        @{ Name = 'Python 3.12'; Id = 'Python.Python.3.12' }
+        @{ Name = 'Python 3.12'; Id = 'Python.Python.3.12'; Type = 'winget' }
     )
 }
 
 $profilePathEntries = @{
     AI = @(
-        (Join-Path $env:LOCALAPPDATA 'OpenCode')
+        (Join-Path $env:LOCALAPPDATA 'OpenCode'),
+        (Join-Path $env:LOCALAPPDATA 'Memento')
     )
     Editor = @(
         (Join-Path $env:USERPROFILE '.cargo' 'bin')
     )
 }
 
-$profileSnippet = @'
-Invoke-Expression (&"starship.exe" init powershell)
-
-Invoke-Expression (& {
-    $hook = if ($PSVersionTable.PSVersion.Major -lt 6) { 'prompt' } else { 'pwd' }
-    (zoxide init --hook $hook powershell | Out-String)
-})
-
-if (Get-Command oh-my-posh -ErrorAction SilentlyContinue) {
-    oh-my-posh init pwsh --config "$env:POSH_THEMES_PATH\zash.omp.json" | Invoke-Expression
-}
-'@
-
-$clinkProfilePath = Join-Path $env:LOCALAPPDATA 'clink'
-$starshipConfigPath = Join-Path $HOME '.config' 'starship.toml'
-$opencodeConfigPath = Join-Path $HOME '.config' 'opencode'
+$packagesDir = Join-Path $PSScriptRoot 'packages'
 
 function Write-Step {
     param([string]$Message)
@@ -107,7 +104,11 @@ function Resolve-Packages {
     $packages = @()
     foreach ($profileName in $ProfileNames) {
         foreach ($package in $profilePackages[$profileName]) {
-            if ($packages.Id -notcontains $package.Id) { $packages += $package }
+            if ($package.Type -eq 'winget') {
+                if ($packages.Id -notcontains $package.Id) { $packages += $package }
+            } else {
+                if ($packages.Name -notcontains $package.Name) { $packages += $package }
+            }
         }
     }
     return $packages

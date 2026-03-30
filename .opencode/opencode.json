@@ -10,6 +10,16 @@
         "chrome-devtools-mcp@latest",
         "--chromeArg=--disable-blink-features=AutomationControlled"
       ]
+    },
+    "memento": {
+      "type": "local",
+      "enabled": true,
+      "command": [
+        "memento",
+        "mcp",
+        "--dir",
+        "<YOUR_VAULT_PATH>"
+      ]
     }
   }
 }

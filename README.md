@@ -13,14 +13,20 @@ Use this repo to rebuild the same Windows terminal and developer setup from scra
 
 The setup script uses profiles to group packages. Base is always included. You can combine multiple profiles.
 
+Packages have a `Type` of either `winget` (installed via `winget install`) or `custom` (installed via a dedicated script in `shared/packages/<Name>.ps1`).
+
 | Profile | Packages |
 |---------|----------|
-| **Base** (default) | PowerShell, Git, Clink, Starship, Zoxide, fzf, ripgrep |
-| **Editor** | Neovim, Obsidian, Oh My Posh, Zig, WinLibs, tree-sitter-cli |
+| **Base** (default) | PowerShell, Git, Clink, Starship, Zoxide, fzf, ripgrep, ClinkConfig*, StarshipConfig*, ShellProfile* |
+| **Editor** | Neovim, Obsidian, Oh My Posh, Zig, WinLibs |
 | **Browser** | Zen Browser |
-| **AI** | OpenCode |
-| **Rust** | Rustup, CMake, LLVM |
+| **AI** | OpenCode, OpenCodeConfig*, Memento* |
+| **Rust** | Rustup |
+| **BuildExtras** | CMake, LLVM |
+| **Python** | Python 3.12 |
 | **Extra** | GitHub CLI, Bun, Doppler, Tailscale |
+
+\* = custom package (see `shared/packages/`)
 
 ## Prerequisites
 
@@ -107,10 +113,9 @@ pwsh -ExecutionPolicy Bypass -File .\install.ps1 -WhatIf
 
 ## What `install.ps1` Does
 
-- installs all packages for the selected profiles with `winget`
-- copies `.clink` into `%LOCALAPPDATA%\clink` (provides Starship prompt and Zoxide in `cmd.exe`)
-- copies `.starship\config.toml` into `$HOME\.config\starship.toml`
-- appends Starship and Zoxide initialization to your PowerShell profile if it is not already present
+- installs `winget` packages for the selected profiles
+- runs custom package scripts from `shared/packages/` for any `custom` type entries
+- configures user PATH for profiles that require it
 
 Base is always included even when you only specify other profiles.
 

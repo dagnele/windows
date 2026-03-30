@@ -7,8 +7,8 @@ param(
 
 $ErrorActionPreference = 'Stop'
 
-$scriptRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
-. (Join-Path $scriptRoot 'shared' 'profiles.ps1')
+$global:scriptRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
+. (Join-Path $global:scriptRoot 'shared' 'profiles.ps1')
 
 # --- main ---
 
@@ -23,39 +23,6 @@ if ($All) {
 }
 
 $packages = Resolve-Packages -ProfileNames $selectedProfiles
-$removingBase = $selectedProfiles -icontains 'Base'
-
-if ($removingBase) {
-    Write-Step 'Removing deployed config'
-    foreach ($path in @($clinkProfilePath, $starshipConfigPath)) {
-        if ((Test-Path $path) -and $PSCmdlet.ShouldProcess($path, 'Remove')) {
-            Remove-Item -Recurse -Force $path
-            Write-Host "Removed $path"
-        }
-    }
-}
-
-if ($selectedProfiles -icontains 'AI') {
-    Write-Step 'Removing OpenCode config'
-    if ((Test-Path $opencodeConfigPath) -and $PSCmdlet.ShouldProcess($opencodeConfigPath, 'Remove')) {
-        Remove-Item -Recurse -Force $opencodeConfigPath
-        Write-Host "Removed $opencodeConfigPath"
-    }
-}
-
-    $profileContent = if (Test-Path $PROFILE) { Get-Content -Path $PROFILE -Raw } else { '' }
-    if ($profileContent.IndexOf($profileSnippet, [System.StringComparison]::Ordinal) -ge 0) {
-        if ($PSCmdlet.ShouldProcess($PROFILE, 'Remove Starship and Zoxide profile setup')) {
-            $updated = $profileContent.Replace($profileSnippet, '').Trim()
-            if ([string]::IsNullOrWhiteSpace($updated)) {
-                Set-Content -Path $PROFILE -Value ''
-            } else {
-                Set-Content -Path $PROFILE -Value ($updated + "`n")
-            }
-            Write-Host "Updated PowerShell profile: $PROFILE"
-        }
-    }
-}
 
 $pathEntries = @()
 foreach ($name in $selectedProfiles) {
@@ -75,9 +42,15 @@ if ($pathEntries.Count -gt 0) {
 
 Write-Step "Uninstalling packages for profiles: $($selectedProfiles -join ', ')"
 foreach ($package in $packages) {
-    if ($PSCmdlet.ShouldProcess($package.Id, 'Uninstall package with winget')) {
-        Write-Host "Uninstalling $($package.Name) [$($package.Id)]"
-        winget uninstall --id $package.Id -e --accept-source-agreements
+    if ($package.Type -eq 'custom') {
+        $scriptPath = Join-Path $packagesDir "$($package.Name).ps1"
+        . $scriptPath
+        Uninstall-Package -WhatIf:$WhatIfPreference
+    } else {
+        if ($PSCmdlet.ShouldProcess($package.Id, 'Uninstall package with winget')) {
+            Write-Host "Uninstalling $($package.Name) [$($package.Id)]"
+            winget uninstall --id $package.Id -e --accept-source-agreements
+        }
     }
 }
 
