@@ -18,14 +18,18 @@ Packages have a `Type` of either `winget` (installed via `winget install`) or `c
 | Profile | Packages |
 |---------|----------|
 | **Base** (default) | PowerShell, Git, Clink, Starship, Zoxide, fzf, ripgrep, ClinkConfig*, StarshipConfig*, ShellProfile* |
-| **Editor** | Neovim, Obsidian, Oh My Posh, Zig, WinLibs |
+| **Neovim** | Neovim, Oh My Posh, Zig, WinLibs |
+| **Obsidian** | Obsidian |
 | **Browser** | Zen Browser |
 | **AI** | OpenCode, OpenCodeConfig*, Memento* |
 | **Rust** | Rustup |
-| **BuildExtras** | CMake, LLVM |
+| **CMake** | CMake |
+| **LLVM** | LLVM |
 | **Bun** | Bun |
 | **Python** | Python 3.12 |
 | **Extra** | GitHub CLI, Doppler, Tailscale |
+| **LocalSend** | LocalSend |
+| **PowerToys** | PowerToys |
 
 \* = custom package (see `shared/packages/`)
 
@@ -35,15 +39,16 @@ Packages have a `Type` of either `winget` (installed via `winget install`) or `c
 - [WinGet](https://learn.microsoft.com/windows/package-manager/winget/) available in PowerShell
 - A checkout location such as `C:\src`
 
-## Editor Profile (NeoVim Development)
+## Neovim Profile (NeoVim Development)
 
-If you plan to develop with NeoVim (building from source, tree-sitter parsers, etc.), include the Editor profile:
+If you plan to develop with NeoVim (building from source, tree-sitter parsers, etc.), include the Neovim profile:
 
 ```powershell
-pwsh -ExecutionPolicy Bypass -File .\install.ps1 -InstallProfile Editor
+pwsh -ExecutionPolicy Bypass -File .\install.ps1 -InstallProfile Neovim
 ```
 
 This installs:
+- **Neovim** - Modern Vim fork
 - **Oh My Posh** - Terminal theme engine with prompt customization
 - **Zig** - Build dependency for compiling NeoVim
 - **WinLibs** - GCC toolchain for native builds
@@ -52,7 +57,7 @@ Note: **tree-sitter-cli** requires Rust. Install with:
 ```powershell
 cargo install tree-sitter-cli
 ```
-Or use the Rust profile: `-InstallProfile Editor,Rust`
+Or use the Rust profile: `-InstallProfile Neovim,Rust`
 
 ### NeoVim Setup Notes
 

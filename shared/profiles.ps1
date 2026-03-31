@@ -5,7 +5,7 @@
 #   winget  - installed via winget install --id <Id>
 #   custom  - installed via shared/packages/<Name>.ps1 (Install-Package / Uninstall-Package)
 
-$validProfiles = @('Base', 'Editor', 'Browser', 'AI', 'Rust', 'BuildExtras', 'Bun', 'Python', 'Extra')
+$validProfiles = @('Base', 'Browser', 'AI', 'Rust', 'CMake', 'LLVM', 'Bun', 'Python', 'Extra', 'LocalSend', 'PowerToys', 'Neovim', 'Obsidian')
 
 $profilePackages = @{
     Base  = @(
@@ -30,30 +30,11 @@ $profilePackages = @{
     Rust  = @(
         @{ Name = 'Rustup'; Id = 'Rustlang.Rustup'; Type = 'winget' }
     )
-    BuildExtras = @(
-        @{ Name = 'CMake'; Id = 'Kitware.CMake'; Type = 'winget' },
+    CMake = @(
+        @{ Name = 'CMake'; Id = 'Kitware.CMake'; Type = 'winget' }
+    )
+    LLVM = @(
         @{ Name = 'LLVM'; Id = 'LLVM.LLVM'; Type = 'winget' }
-    )
-    Extra = @(
-        @{ Name = 'GitHub CLI'; Id = 'GitHub.cli'; Type = 'winget' },
-        @{ Name = 'Doppler'; Id = 'Doppler.doppler'; Type = 'winget' },
-        @{ Name = 'Tailscale'; Id = 'Tailscale.Tailscale'; Type = 'winget' }
-    )
-    Bun   = @(
-        @{ Name = 'Bun'; Id = 'Oven-sh.Bun'; Type = 'winget' }
-    )
-    Editor = @(
-        @{ Name = 'Neovim'; Id = 'Neovim.Neovim'; Type = 'winget' },
-        @{ Name = 'Obsidian'; Id = 'Obsidian.Obsidian'; Type = 'winget' },
-        @{ Name = 'Oh My Posh'; Id = 'JanDeDobbeleer.OhMyPosh'; Type = 'winget' },
-        @{ Name = 'Zig'; Id = 'zig.zig'; Type = 'winget' },
-        @{ Name = 'WinLibs'; Id = 'BrechtSanders.WinLibs.POSIX.UCRT'; Type = 'winget' }
-    )
-    Browser = @(
-        @{ Name = 'Zen Browser'; Id = 'Zen-Team.Zen-Browser'; Type = 'winget' }
-    )
-    Python = @(
-        @{ Name = 'Python 3.12'; Id = 'Python.Python.3.12'; Type = 'winget' }
     )
 }
 
@@ -62,7 +43,7 @@ $profilePathEntries = @{
         (Join-Path $env:LOCALAPPDATA 'OpenCode'),
         (Join-Path $env:LOCALAPPDATA 'Memento')
     )
-    Editor = @(
+    Neovim = @(
         (Join-Path $env:USERPROFILE '.cargo' 'bin')
     )
 }
